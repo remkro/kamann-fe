@@ -1,8 +1,9 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import apiClient from "../../api/ApiClient.ts";
 import Sidebar from "../common/Sidebar.tsx";
 import Header from "../common/Header.tsx";
 import Footer from "../common/Footer.tsx";
+import { Link } from "react-router-dom";
 
 interface UserDto {
     id: number;
@@ -87,8 +88,11 @@ const UsersPage = () => {
 
                     <div className="container">
                         <div className="page-inner">
-                            <div className="page-header">
+                            <div className="page-header d-flex justify-content-between align-items-center">
                                 <h3 className="fw-bold mb-3">Zarządzanie użytkownikami</h3>
+                                <Link to="/users/add" className="btn btn-primary">
+                                    Dodaj użytkownika
+                                </Link>
                             </div>
                             <div className="row">
                                 <div className="col-12">
@@ -124,7 +128,7 @@ const UsersPage = () => {
                                                         <tbody>
                                                         {users.map((user, index) => (
                                                             <tr key={user.id}>
-                                                            <td>{pagination.currentPage * pagination.pageSize + index + 1}</td>
+                                                                <td>{pagination.currentPage * pagination.pageSize + index + 1}</td>
                                                                 <td>{user.firstName}</td>
                                                                 <td>{user.lastName}</td>
                                                                 <td>{user.email}</td>
@@ -177,7 +181,7 @@ const UsersPage = () => {
                                                                 value={pagination.pageSize}
                                                                 onChange={handlePageSizeChange}
                                                                 className="form-select"
-                                                                style={{ width: "auto", display: "inline-block" }}
+                                                                style={{width: "auto", display: "inline-block"}}
                                                             >
                                                                 {[5, 10, 20, 50].map((size) => (
                                                                     <option key={size} value={size}>
@@ -196,7 +200,7 @@ const UsersPage = () => {
                         </div>
                     </div>
 
-                    <Footer />
+                    <Footer/>
                 </div>
             </div>
         </>
