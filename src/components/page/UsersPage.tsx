@@ -17,25 +17,31 @@ const UsersPage = () => {
     const [users, setUsers] = useState<UserDto[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
-    const [totalElements, setTotalElements] = useState(0);
-    const [pageSize, setPageSize] = useState(20);
+    const [pagination, setPagination] = useState({
+        currentPage: 0,
+        totalPages: 0,
+        totalElements: 0,
+        pageSize: 20,
+    });
 
     useEffect(() => {
-        fetchUsers(currentPage, pageSize);
-    }, [currentPage, pageSize]);
+        fetchUsers();
+    }, [pagination.currentPage, pagination.pageSize]);
 
-    const fetchUsers = async (page: number, size: number) => {
+    const fetchUsers = async () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await apiClient.get(`/admin/users?page=${page}&size=${size}`);
+            const { currentPage, pageSize } = pagination;
+            const response = await apiClient.get(`/admin/users?page=${currentPage}&size=${pageSize}`);
             setUsers(response.data.content);
-            setTotalPages(response.data.totalPages);
-            setTotalElements(response.data.totalElements);
-        } catch (err) {
-            console.error(err);
+            setPagination((prev) => ({
+                ...prev,
+                totalPages: response.data.totalPages,
+                totalElements: response.data.totalElements,
+            }));
+        } catch (err: never) {
+            console.error("Error fetching users:", err);
             setError("Failed to fetch users");
         } finally {
             setLoading(false);
@@ -43,21 +49,25 @@ const UsersPage = () => {
     };
 
     const handlePageChange = (newPage: number) => {
-        if (newPage >= 0 && newPage < totalPages) {
-            setCurrentPage(newPage);
+        if (newPage >= 0 && newPage < pagination.totalPages) {
+            setPagination((prev) => ({ ...prev, currentPage: newPage }));
         }
     };
 
     const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setPageSize(parseInt(event.target.value, 10));
-        setCurrentPage(0);
+        const newSize = parseInt(event.target.value, 10);
+        setPagination((prev) => ({
+            ...prev,
+            pageSize: newSize,
+            currentPage: 0,
+        }));
     };
 
     const renderPaginationButtons = () => {
         const buttons = [];
-        for (let i = 0; i < totalPages; i++) {
+        for (let i = 0; i < pagination.totalPages; i++) {
             buttons.push(
-                <li key={i} className={`page-item ${currentPage === i ? "active" : ""}`}>
+                <li key={i} className={`page-item ${pagination.currentPage === i ? "active" : ""}`}>
                     <button className="page-link" onClick={() => handlePageChange(i)}>
                         {i + 1}
                     </button>
@@ -114,7 +124,7 @@ const UsersPage = () => {
                                                         <tbody>
                                                         {users.map((user, index) => (
                                                             <tr key={user.id}>
-                                                            <td>{currentPage * pageSize + index + 1}</td>
+                                                            <td>{pagination.currentPage * pagination.pageSize + index + 1}</td>
                                                                 <td>{user.firstName}</td>
                                                                 <td>{user.lastName}</td>
                                                                 <td>{user.email}</td>
@@ -130,20 +140,20 @@ const UsersPage = () => {
                                                         <div>
                                                             <nav>
                                                                 <ul className="pagination pg-primary">
-                                                                    <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                                                                    <li className={`page-item ${pagination.currentPage === 0 ? "disabled" : ""}`}>
                                                                         <button
                                                                             className="page-link"
-                                                                            onClick={() => handlePageChange(currentPage - 1)}
+                                                                            onClick={() => handlePageChange(pagination.currentPage - 1)}
                                                                             aria-label="Previous"
                                                                         >
                                                                             <span aria-hidden="true">&laquo;</span>
                                                                         </button>
                                                                     </li>
                                                                     {renderPaginationButtons()}
-                                                                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                                                                    <li className={`page-item ${pagination.currentPage === pagination.totalPages - 1 ? "disabled" : ""}`}>
                                                                         <button
                                                                             className="page-link"
-                                                                            onClick={() => handlePageChange(currentPage + 1)}
+                                                                            onClick={() => handlePageChange(pagination.currentPage + 1)}
                                                                             aria-label="Next"
                                                                         >
                                                                             <span aria-hidden="true">&raquo;</span>
@@ -154,8 +164,8 @@ const UsersPage = () => {
                                                         </div>
                                                         <div>
                                                             <span>
-                                                                Strona {currentPage + 1} z {totalPages} (
-                                                                {totalElements} użytkowników)
+                                                                Strona {pagination.currentPage + 1} z {pagination.totalPages} (
+                                                                {pagination.totalElements} użytkowników)
                                                             </span>
                                                         </div>
                                                         <div>
@@ -164,7 +174,7 @@ const UsersPage = () => {
                                                             </label>
                                                             <select
                                                                 id="pageSizeSelect"
-                                                                value={pageSize}
+                                                                value={pagination.pageSize}
                                                                 onChange={handlePageSizeChange}
                                                                 className="form-select"
                                                                 style={{ width: "auto", display: "inline-block" }}
