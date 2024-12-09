@@ -11,7 +11,7 @@ const Sidebar = () => {
                 <div className="logo-header" data-background-color="dark">
                     <a href="../index.html" className="logo">
                         <img
-                            src="src/assets/img/kaiadmin/logo_light.svg"
+                            src="../../../public/assets/img/kaiadmin/logo_light.svg"
                             alt="navbar brand"
                             className="navbar-brand"
                             height="20"
