@@ -5,7 +5,7 @@ const Header = () => {
                 <div className="logo-header" data-background-color="dark">
                     <a href="../index.html" className="logo">
                         <img
-                            src="src/assets/img/kaiadmin/logo_light.svg"
+                            src="../../../public/assets/img/kaiadmin/logo_light.svg"
                             alt="navbar brand"
                             className="navbar-brand"
                             height="20"
@@ -329,7 +329,7 @@ const Header = () => {
                             >
                                 <div className="avatar-sm">
                                     <img
-                                        src="src/assets/img/profile.jpg"
+                                        src="../../../public/assets/img/profile.jpg"
                                         alt="..."
                                         className="avatar-img rounded-circle"
                                     />
