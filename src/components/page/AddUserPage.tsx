@@ -3,6 +3,7 @@ import Sidebar from "../common/Sidebar.tsx";
 import Header from "../common/Header.tsx";
 import Footer from "../common/Footer.tsx";
 import apiClient from "../../api/ApiClient.ts";
+import {Link} from "react-router-dom";
 
 const AddUserPage = () => {
     const [formData, setFormData] = useState({
@@ -76,8 +77,11 @@ const AddUserPage = () => {
 
                     <div className="container">
                         <div className="page-inner">
-                            <div className="page-header">
-                                <h3 className="fw-bold mb-3">Dodawanie użytkownika</h3>
+                            <div className="page-header d-flex justify-content-between align-items-center">
+                                <h3 className="fw-bold mb-3">Rejestracja użtykownika</h3>
+                                <Link to="/users" className="btn btn-primary">
+                                    Lista użytkowników
+                                </Link>
                             </div>
                             <div className="row">
                                 <div className="col-md-12">
@@ -98,7 +102,8 @@ const AddUserPage = () => {
                                                         placeholder="Wprawadź email"
                                                     />
                                                     {!emailValid && (
-                                                        <div className="invalid-feedback">Podaj poprawny adres email.</div>
+                                                        <div className="invalid-feedback">Podaj poprawny adres
+                                                            email.</div>
                                                     )}
                                                 </div>
                                                 <div className="form-group">
@@ -151,8 +156,9 @@ const AddUserPage = () => {
                                                 <div className="card-action">
                                                     <button
                                                         type="submit"
-                                                        className="btn btn-success me-2"
-                                                        disabled={!isFormValid} // Disable button if form is invalid
+                                                        className={`btn me-2 ${!isFormValid ? "disabled" : "btn-success"}`}
+                                                        disabled={!isFormValid}
+                                                        style={!isFormValid ? { backgroundColor: "#d6d6d6", borderColor: "#ccc", cursor: "not-allowed", pointerEvents: "auto" } : {}}
                                                     >
                                                         Wyślij
                                                     </button>
@@ -182,7 +188,7 @@ const AddUserPage = () => {
                         </div>
                     </div>
 
-                    <Footer />
+                    <Footer/>
                 </div>
             </div>
         </>
